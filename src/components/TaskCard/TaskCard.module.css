@@ -1,0 +1,131 @@
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
+  transition: box-shadow var(--transition), transform var(--transition);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card:hover {
+  box-shadow: 0 3px 10px rgba(9, 30, 66, 0.18), 0 0 1px rgba(9, 30, 66, 0.12);
+  transform: translateY(-1px);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.4;
+  flex: 1;
+  word-break: break-word;
+}
+
+.deleteBtn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--color-text-subtle);
+  font-size: 18px;
+  line-height: 1;
+  padding: 0 2px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition), background-color var(--transition);
+}
+
+.deleteBtn:hover {
+  color: var(--color-danger);
+  background-color: var(--color-danger-light);
+}
+
+.description {
+  font-size: 13px;
+  color: var(--color-text-subtle);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--color-bg);
+  color: var(--color-text-subtle);
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+}
+
+.userBadge {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  border-color: transparent;
+}
+
+.dates {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.date {
+  font-size: 11px;
+  color: var(--color-text-placeholder);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.moveBtn {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  transition: background-color var(--transition), border-color var(--transition);
+  white-space: nowrap;
+}
+
+.moveBtn:hover {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.movePrev {
+  color: var(--color-text-subtle);
+}
+
+.movePrev:hover {
+  background-color: var(--color-bg);
+  border-color: var(--color-text-subtle);
+}

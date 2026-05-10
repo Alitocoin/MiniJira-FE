@@ -1,0 +1,34 @@
+.app {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+}
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background-color: var(--color-danger-light);
+  color: var(--color-danger);
+  border-bottom: 2px solid #ffbdad;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.retryBtn {
+  background-color: var(--color-danger);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity var(--transition);
+}
+
+.retryBtn:hover {
+  opacity: 0.85;
+}

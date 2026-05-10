@@ -1,0 +1,85 @@
+.column {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
+}
+
+.colHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-bottom: 2px solid transparent;
+}
+
+.colTodo {
+  background-color: #f4f5f7;
+  border-bottom-color: var(--color-border);
+}
+
+.colInProgress {
+  background-color: #deebff;
+  border-bottom-color: var(--color-primary);
+}
+
+.colDone {
+  background-color: #e3fcef;
+  border-bottom-color: var(--color-success);
+}
+
+.colLabel {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.colCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  background-color: rgba(9, 30, 66, 0.12);
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-subtle);
+}
+
+.colInProgress .colCount {
+  background-color: rgba(0, 82, 204, 0.15);
+  color: var(--color-primary);
+}
+
+.colDone .colCount {
+  background-color: rgba(0, 135, 90, 0.15);
+  color: var(--color-success);
+}
+
+.colBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 10px;
+  flex: 1;
+}
+
+.emptyCol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  color: var(--color-text-placeholder);
+  font-size: 13px;
+  font-style: italic;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  margin: 4px 0;
+}
