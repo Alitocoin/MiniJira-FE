@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import type { Task, TaskRequest } from '../types';
-import { createTask } from '../api';
+import React, { useState, useEffect } from 'react';
+import type { Task, TaskRequest, TaskStatus, User } from '../types';
+import { createTask, getUsers } from '../api';
 
 interface CreateTaskFormProps {
   onCreated: (task: Task) => void;
   onClose: () => void;
+  defaultStatus?: TaskStatus;
 }
 
 const overlayStyle: React.CSSProperties = {
@@ -24,6 +25,8 @@ const modalStyle: React.CSSProperties = {
   width: '100%',
   maxWidth: '480px',
   boxShadow: '0 8px 32px rgba(9,30,66,0.25)',
+  maxHeight: '90vh',
+  overflowY: 'auto',
 };
 
 const modalTitleStyle: React.CSSProperties = {
@@ -56,6 +59,7 @@ const inputStyle: React.CSSProperties = {
   color: '#172b4d',
   outline: 'none',
   transition: 'border-color 0.15s',
+  backgroundColor: '#ffffff',
 };
 
 const rowStyle: React.CSSProperties = {
@@ -97,13 +101,30 @@ const errorStyle: React.CSSProperties = {
   marginTop: '4px',
 };
 
-const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ onCreated, onClose }) => {
+const STATUS_OPTIONS: { value: TaskStatus; label: string }[] = [
+  { value: 'TODO', label: 'Por hacer' },
+  { value: 'IN_PROGRESS', label: 'En progreso' },
+  { value: 'DONE', label: 'Hecho' },
+];
+
+const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ onCreated, onClose, defaultStatus = 'TODO' }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [status, setStatus] = useState<TaskStatus>(defaultStatus);
   const [storyPoints, setStoryPoints] = useState('');
   const [estimatedHours, setEstimatedHours] = useState('');
+  const [assigneeId, setAssigneeId] = useState('');
+  const [users, setUsers] = useState<User[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    getUsers()
+      .then(setUsers)
+      .catch(() => {
+        // Si no hay usuarios disponibles, simplemente no mostramos el selector
+      });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,11 +136,12 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ onCreated, onClose }) =
     const payload: TaskRequest = {
       title: title.trim(),
       description: description.trim(),
-      status: 'TODO',
+      status,
     };
 
     if (storyPoints !== '') payload.storyPoints = Number(storyPoints);
     if (estimatedHours !== '') payload.estimatedHours = Number(estimatedHours);
+    if (assigneeId !== '') payload.assigneeId = Number(assigneeId);
 
     setSubmitting(true);
     setError(null);
@@ -168,6 +190,45 @@ const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ onCreated, onClose }) =
               placeholder="Descripcion opcional"
             />
           </div>
+
+          <div style={fieldStyle}>
+            <label style={labelStyle} htmlFor="task-status">
+              Estado inicial
+            </label>
+            <select
+              id="task-status"
+              style={inputStyle}
+              value={status}
+              onChange={(e) => setStatus(e.target.value as TaskStatus)}
+            >
+              {STATUS_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {users.length > 0 && (
+            <div style={fieldStyle}>
+              <label style={labelStyle} htmlFor="task-assignee">
+                Asignar a
+              </label>
+              <select
+                id="task-assignee"
+                style={inputStyle}
+                value={assigneeId}
+                onChange={(e) => setAssigneeId(e.target.value)}
+              >
+                <option value="">Sin asignar</option>
+                {users.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.username} ({u.email})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div style={{ ...rowStyle, ...fieldStyle }}>
             <div style={{ flex: 1 }}>
