@@ -37,3 +37,17 @@ export interface TaskRequest {
   assigneeId?: number;
   projectId?: number;
 }
+
+// Auth types
+export interface AuthResponse {
+  token: string;
+  type: 'Bearer';
+  username: string;
+  email: string;
+}
+
+export interface AuthSession {
+  token: string;
+  username: string;
+  email: string;
+}
