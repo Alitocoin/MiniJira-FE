@@ -1,0 +1,117 @@
+name: CI Frontend
+
+on:
+  push:
+    branches:
+      - test-05-cicd_v01
+  pull_request:
+    branches:
+      - test-05-cicd_v01
+
+jobs:
+  build-and-test:
+    name: Build, Test y Audit — MiniJira FE
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout del código
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js 20
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. Cache de node_modules
+      - name: Cache dependencias npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # 4. Instalar dependencias
+      - name: Instalar dependencias (npm ci)
+        run: npm ci
+
+      # 5a. Verificar si existe configuración de lint
+      - name: Verificar configuración de lint
+        id: check-lint
+        run: |
+          if [ -f "eslint.config.js" ] || [ -f ".eslintrc" ] || [ -f ".eslintrc.js" ] || [ -f ".eslintrc.json" ] || [ -f ".eslintrc.yml" ]; then
+            echo "lint_exists=true" >> $GITHUB_OUTPUT
+            echo "Configuración de lint encontrada."
+          else
+            echo "lint_exists=false" >> $GITHUB_OUTPUT
+            echo "Lint configuration not found. Documented as pending."
+          fi
+
+      # 5b. Ejecutar lint si la configuración existe
+      - name: Lint (ESLint)
+        if: steps.check-lint.outputs.lint_exists == 'true'
+        run: npm run lint
+
+      # 6a. Verificar si existen tests
+      - name: Verificar existencia de tests
+        id: check-tests
+        run: |
+          TEST_COUNT=$(find src -name "*.test.*" -o -name "*.spec.*" 2>/dev/null | wc -l)
+          if [ "$TEST_COUNT" -gt "0" ]; then
+            echo "tests_exist=true" >> $GITHUB_OUTPUT
+            echo "Tests encontrados: $TEST_COUNT archivos."
+          else
+            echo "tests_exist=false" >> $GITHUB_OUTPUT
+            echo "Tests not found. Documented as pending."
+          fi
+
+      # 6b. Ejecutar tests si existen
+      - name: Tests unitarios (Vitest)
+        if: steps.check-tests.outputs.tests_exist == 'true'
+        run: npm run test -- --run
+
+      # 7. Build (falla el pipeline si falla)
+      - name: Build producción
+        run: npm run build
+
+      # 8a. Verificar configuración de audit
+      - name: Verificar configuración de npm audit
+        id: check-audit
+        run: |
+          if [ -f "package-lock.json" ]; then
+            echo "audit_ready=true" >> $GITHUB_OUTPUT
+            echo "package-lock.json encontrado. npm audit disponible."
+          else
+            echo "audit_ready=false" >> $GITHUB_OUTPUT
+            echo "Security audit tooling not configured. Documented as pending."
+          fi
+
+      # 8b. Ejecutar audit de seguridad si está disponible
+      - name: Audit de seguridad (npm audit)
+        if: steps.check-audit.outputs.audit_ready == 'true'
+        run: npm audit --audit-level=high
+
+      # 9. Subir artefacto dist/
+      - name: Subir artefacto de build
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-dist
+          path: dist/
+          retention-days: 7
+
+      # 10. Resumen del resultado
+      - name: Resumen del pipeline
+        if: always()
+        run: |
+          echo "======================================"
+          echo "  RESUMEN CI FRONTEND — MiniJira FE  "
+          echo "======================================"
+          echo "Node.js         : 20"
+          echo "Lint config     : ${{ steps.check-lint.outputs.lint_exists }}"
+          echo "Tests presentes : ${{ steps.check-tests.outputs.tests_exist }}"
+          echo "Audit listo     : ${{ steps.check-audit.outputs.audit_ready }}"
+          echo "Artefacto       : dist/ subido"
+          echo "======================================"

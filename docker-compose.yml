@@ -1,0 +1,12 @@
+# docker-compose.yml — Validación local únicamente
+# NO publicar imágenes ni hacer push a ningún registry externo.
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: minijira-frontend
+    ports:
+      - "3000:80"
+    restart: unless-stopped
