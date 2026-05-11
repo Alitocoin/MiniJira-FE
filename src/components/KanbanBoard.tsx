@@ -3,11 +3,13 @@ import type { Task, TaskStatus, CreateTaskPayload } from '../types';
 import { fetchTasks, updateTaskStatus, deleteTask, createTask } from '../api';
 import { KanbanColumn } from './KanbanColumn';
 import { TaskModal } from './TaskModal';
+import { useAuth } from '../context/AuthContext';
 import './KanbanBoard.css';
 
 const STATUSES: TaskStatus[] = ['TODO', 'IN_PROGRESS', 'DONE'];
 
 export function KanbanBoard() {
+  const { user, logout } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -96,6 +98,18 @@ export function KanbanBoard() {
           >
             &#8635;
           </button>
+          {user && (
+            <div className="board-header__user">
+              <span className="board-header__username">{user.username}</span>
+              <button
+                className="btn btn--ghost board-header__logout"
+                onClick={logout}
+                title="Cerrar sesión"
+              >
+                Salir
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
