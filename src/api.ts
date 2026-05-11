@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Task, TaskRequest, TaskStatus, User } from './types';
+import type { Task, TaskRequest, TaskStatus, User, AuthResponse } from './types';
 
 const BASE_URL = 'http://localhost:8080/api';
 
@@ -8,6 +8,15 @@ const client = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+});
+
+// Interceptor: adjunta el token JWT a cada request si existe
+client.interceptors.request.use((config) => {
+  const token = localStorage.getItem('auth_token');
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
 });
 
 // Tasks
@@ -29,3 +38,14 @@ export const getUsers = (): Promise<User[]> =>
 
 export const createUser = (data: { username: string; email: string }): Promise<User> =>
   client.post<User>('/users', data).then((res) => res.data);
+
+// Auth
+export const login = (email: string, password: string): Promise<AuthResponse> =>
+  client.post<AuthResponse>('/auth/login', { email, password }).then((res) => res.data);
+
+export const register = (
+  username: string,
+  email: string,
+  password: string
+): Promise<AuthResponse> =>
+  client.post<AuthResponse>('/auth/register', { username, email, password }).then((res) => res.data);
