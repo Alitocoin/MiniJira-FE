@@ -87,6 +87,7 @@ const App: React.FC = () => {
   };
 
   const handleStatusChange = async (id: number, status: TaskStatus) => {
+    setError(null);
     try {
       const updated = await updateTaskStatus(id, status);
       setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));

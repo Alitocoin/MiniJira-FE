@@ -4,14 +4,12 @@ export interface User {
   id: number;
   username: string;
   email: string;
-  createdAt: string;
 }
 
 export interface Project {
   id: number;
   name: string;
   description: string;
-  createdAt: string;
 }
 
 export interface Task {
