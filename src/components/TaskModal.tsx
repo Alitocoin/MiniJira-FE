@@ -70,7 +70,7 @@ export function TaskModal({ initialStatus = 'TODO', onClose, onSubmit }: Props) 
       estimatedHours: estimatedHours === '' ? 0 : Number(estimatedHours),
       startDate: startDate || today(),
       endDate: endDate || startDate || today(),
-      userId: userId === '' ? null : Number(userId),
+      assignedUserId: userId === '' ? null : Number(userId),
       projectId: projectId === '' ? null : Number(projectId),
     };
 

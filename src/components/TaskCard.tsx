@@ -50,16 +50,16 @@ export function TaskCard({ task, onMove, onDelete }: Props) {
 
       <footer className="task-card__footer">
         <div className="task-card__meta">
-          {task.assignedUser && (
-            <span className="task-card__user" title={task.assignedUser.email}>
+          {task.assignedUserName && (
+            <span className="task-card__user">
               <span className="task-card__avatar" aria-hidden="true">
-                {task.assignedUser.name.charAt(0).toUpperCase()}
+                {task.assignedUserName.charAt(0).toUpperCase()}
               </span>
-              {task.assignedUser.name}
+              {task.assignedUserName}
             </span>
           )}
-          {task.project && (
-            <span className="task-card__project">{task.project.name}</span>
+          {task.projectName && (
+            <span className="task-card__project">{task.projectName}</span>
           )}
         </div>
 

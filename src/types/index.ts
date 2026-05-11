@@ -12,17 +12,24 @@ export interface Project {
   description: string;
 }
 
+/**
+ * Refleja el contrato real de TaskResponse del backend:
+ * - assignedUser y project se devuelven como campos planos (no objetos anidados)
+ * - storyPoints y estimatedHours son nullables (Integer/Double en Java)
+ */
 export interface Task {
   id: number;
   title: string;
   description: string;
   status: TaskStatus;
-  storyPoints: number;
-  estimatedHours: number;
-  startDate: string;
-  endDate: string;
-  assignedUser: User | null;
-  project: Project | null;
+  storyPoints: number | null;
+  estimatedHours: number | null;
+  startDate: string | null;
+  endDate: string | null;
+  assignedUserId: number | null;
+  assignedUserName: string | null;
+  projectId: number | null;
+  projectName: string | null;
 }
 
 export interface CreateTaskPayload {
@@ -33,6 +40,6 @@ export interface CreateTaskPayload {
   estimatedHours: number;
   startDate: string;
   endDate: string;
-  userId: number | null;
+  assignedUserId: number | null;
   projectId: number | null;
 }
